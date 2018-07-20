@@ -1,0 +1,57 @@
+\documentclass[12pt]{article}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.15 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{color}
+\definecolor{purple}{RGB}{51,0,111}
+\usepackage{comment}
+
+\newenvironment{solution}
+	{\begin{center}
+	\begin{tabular}{|p{0.9\textwidth}|}
+	\hline\\
+	\textbf{Solution:}
+	}
+	{\\\\
+	\hline
+	\end{tabular}
+	\end{center}
+	}
+
+\begin{document}
+\vspace*{-2em}
+{\large CSE 332 Summer 18\\
+Section 02}
+\vspace{-1em}
+	
+\begin{center}
+	{\huge \color{purple} $\mathcal{O}, \Omega,$ and $\Theta$ oh my!}
+\end{center}
+
+Give a formal proof of each of the following statements, along with the scratch-work to find the $c$ and $n_0$. 
+
+\begin{enumerate}[(a)]
+	\item $5n+7$ is $O(n)$
+		\vspace{1.1in}
+	\item $3n^2 - 17n$ is $O(n^2)$
+		\vspace{1.1in}
+		
+	\item $\log_5(n)$ is $\Omega(\log_3(n))$
+\vspace{1.1in}
+	\item $2n^3 + 3$ is $\Theta(n^3)$
+	
+\end{enumerate}
+
+\end{document}

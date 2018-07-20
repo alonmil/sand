@@ -1,0 +1,244 @@
+\documentclass[12pt]{article}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.15 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage{algorithm, algpseudocode}
+
+
+\newenvironment{solution}
+	{\begin{center}
+	\begin{tabular}{|p{0.9\textwidth}|}
+	\hline\\
+	\textbf{Solution:}
+	}
+	{\\\\
+	\hline
+	\end{tabular}
+	\end{center}
+	}
+
+\begin{document}
+{\huge CSE 332 Summer 18\\
+Section 03}
+\section{Solving Recurrences}
+For each of the following recurrences, use the tree method to find a closed form of the recurrence. 
+
+When using the tree method, you should do the following steps.
+\begin{enumerate}
+	\setcounter{enumi}{-1}
+	\item Draw at least the first two levels of the recursion tree, and the leaf level of the tree. 
+	\item Let the root node be at level $0$. Give a formula for the size of the input at level $i$. 
+	\item What is the number of nodes at level $i$? 
+	\item What is the work done at the $i^{\text{th}}$ recursive level? 
+	\item What is the last level of the tree? 
+	\item What is the work done at the base case? 
+	\item Write an expression for the total work done. Your expression should include a summation. 
+	\item Find a ``closed form'' of the formula in the previous part. To qualify as a closed form, it must not have any summations or recursion, but it does not have to ``look nice.'' 
+	\item If possible, use Master Theorem to sanity check your answer.
+\end{enumerate}
+
+\newpage
+\begin{enumerate}[a)]
+	\item $ T(n) = \begin{cases} 1 &\text{ if } n=1\\
+				T(n/2) + 3 &\text{ otherwise}
+				\end{cases}$
+			\begin{solution}
+				\begin{enumerate}[1.]
+					
+					\item $\frac{n}{2^i}$ 
+					\item $1$
+					\item $1 \cdot 3$					
+					\item We want the $i$ such that $\frac{n}{2^i} = 1$. Solving we get $\log_2(n)$ as the last level.
+                    \item $1 \cdot 1$
+					\item $\sum\limits_{i=0}^{\log_2(n) - 1} 3 + 1$
+					\item $3\log_2(n) + 1$
+					\item Since $\log_2(1) = 0$ so the Master theorem says we should get $\Theta(n^0 \log n)$ i.e. $\Theta(\log n)$, which matches our answer from the last part.
+				\end{enumerate}
+			\end{solution}
+	\item $ T(n) = \begin{cases} 1 &\text{ if } n=0\\
+				T(n-1) + 2 &\text{ otherwise}
+				\end{cases}$
+				\begin{solution}
+					\begin{enumerate}[1.]
+						\item $n-i$
+						\item $1$
+						\item $2\cdot 1$
+						\item We want the level $i$ at which $n-i = 0$, so we want level $n$.
+						\item $1 \cdot 1$
+						\item $\sum\limits_{i=0}^{n-1} 2 + 1$
+						\item $2n+1$
+						\item Master Theorem does not apply here :/
+						
+					\end{enumerate}
+				\end{solution}
+				\newpage
+	\item $ T(n) = \begin{cases} 1 &\text{ if }n=1\\
+					3T(n/3) + n &\text{ otherwise}
+					\end{cases}$
+				\begin{solution}
+					\begin{enumerate}[1.]
+						\item $\frac{n}{3^i}$
+						\item $3^i$
+						\item $\frac{n}{3^i} \cdot 3^i = n$
+						\item The level $i$ at which $\frac{n}{3^i} = 1$ i.e. $\log_3(n)$. 
+						\item $3^{\log_3(n)} \cdot 1 = n$
+						\item $\sum\limits_{i=0}^{\log_3(n) - 1} n + n$ 
+						\item $n\log_3(n) + n$
+						\item $\log_3(3) = 1$, so Master Theorem says $\Theta(n \log n)$, which is consistent with our answer. 
+					\end{enumerate}
+				\end{solution}
+				\newpage
+	\item  $ T(n) = \begin{cases} 1 &\text{ if }n=3\\
+					2T(n/3) + n &\text{ otherwise}
+					\end{cases}$
+					\begin{solution}
+					\begin{enumerate}[1.]
+						\item $\frac{n}{3^i}$
+						\item $2^i$
+						\item $2^i \frac{n}{3^i} = n\left(\frac{2}{3}\right)^i$
+						\item The level $i$ such that $\frac{n}{3^i} = 3$ so $\log_3(n) - 1$ is the last level.
+						\item $2^{\log_3(n) - 1} \cdot 1$
+						\item $\sum\limits_{i=0}^{\log_3(n) - 2} n\left(\frac{2}{3}\right)^i + 2^{\log_3(n) - 1}$
+						\item 
+						Applying the finite geometric series formula we get:
+						\[ n \frac{\left(\frac{2}{3}\right)^{\log_3(n) - 1 } - 1}{\frac{2}{3} - 1} +  2^{\log_3(n) - 1}\]
+						Looks pretty ugly, but it's a closed form. So we'll stop here.
+						\item $\log_3(2) < 1$ so we should get $\Theta(n)$. The crazy formula from the last part is actually $\Theta(n)$. The second term is on the order of $n^{\log_3(2)}$, which is asymptotically less than $n$ (since $\log_3(2) < 1$) In the first term, the denominator is negative, so it's really $n\left(c - c'\left(\frac{2}{3}\right)^{\log_3(n) - 1 }\right)$ (where $c,c'$ are constants. As $n$ gets larger, $\left(\frac{2}{3}\right)^{\log_3(n) - 1 }$ is getting smaller. So $cn$ really is the dominating term.
+					\end{enumerate}
+					\end{solution}
+	\newpage
+	\item $ T(n) = \begin{cases} 2 &\text{ if }n=4\\
+					4T(n/2) + n^2 &\text{ otherwise}
+					\end{cases}$
+			\begin{solution}
+				\begin{enumerate}[1.]
+					\item $\frac{n}{2^i}$
+					\item $4^i$
+					\item $4^i \cdot \left(\frac{n}{2^i}\right)^2 = n^2$. 
+					\item We want the level $i$ where $4 = \frac{n}{2^i}$, so we want level $\log_2(n) - 2$. 
+					\item $4^{\log_2(n) - 2} \cdot 2 = 2^{2\log_2(n) - 3} = \frac{n^2}{8}$
+					\item $\sum\limits_{i=0}^{\log_2(n) - 3}  n^2 + \frac{n^2}{8} $
+					\item $ (\log_2(n) - 2)n^2 + \frac{n^2}{8}$
+					\item $\log_2(4) = 2$, so Master Theorem predicts $\Theta(n^2 \log n)$, which matches our answer.
+				\end{enumerate}
+			\end{solution}
+\end{enumerate}
+
+\section{Writing Recurrences}
+Answer the following questions about these pseudocode snippets.
+In cases where you are describing the running time, you should describe the non-recursive work using a simple function. For example, if the total number of non-recursive operations was $2n+4$ you can describe this as just $c\cdot n$ (where $c$ is a constant, and we ignore the lower-order term). 
+
+\begin{enumerate}[a)]
+\item \begin{algorithm}
+\begin{algorithmic}
+	\Function{\texttt{F}}{$n$}
+		\If{$n == 0$}
+			\State \Return 1
+		\Else
+			\State \Return $2 \cdot \texttt{F}(n-1) + 1$
+		\EndIf
+	\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{itemize}
+	\item Write a recurrence to describe the output of the function.
+	\begin{solution}
+		\[ P(n) = \begin{cases} 1 &\text{ if } n=0 \\
+						2P(n-1) + 1 &\text{ otherwise}
+		\end{cases}\]
+		
+	
+	\end{solution}
+	
+	\item Write a recurrence to describe the running time of the function.
+	\begin{solution}
+			\[ T(n) = \begin{cases} c_1 &\text{ if } n=0\\
+								T(n-1) + c_2 &\text{ otherwise}
+		\end{cases}\]
+		where $c_1, c_2$ are constants.
+	\end{solution}
+\end{itemize}
+
+\item \begin{algorithm}
+\begin{algorithmic}
+	\Function{\texttt{F}}{$n$}
+		\If{$n == 0$}
+			\State \Return 0
+		\EndIf
+		
+		\State \texttt{result} $\gets 0$
+		\For{$i$ from $0$ to $n-1$}
+			\For{$j$ from $0$ to $i$}
+				\State \texttt{result} $\gets$ \texttt{result} $+ j$
+			\EndFor
+		\EndFor
+		\State \Return \texttt{F}($n/2$) + \texttt{result} + \texttt{F}($n/2)$
+		\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\begin{itemize}
+	\item Write a recurrence to model the running time of this function.
+	\begin{solution}
+		\[ T(n) = \begin{cases} c_1 &\text{ if }n=0\\
+								2T(n/2) + c_2n^2 &\text{ otherwise}
+								\end{cases}\]
+		Where $c_1, c_2$ are constants.
+	\end{solution}
+	\item Find a Big-$\Theta$ bound on the running time. 
+	\begin{solution}
+		Applying the master theorem, since $\log_2(2) < 2$ is $\Theta(n^2)$. We could also solve the recurrence with the tree method to get this bound.
+	\end{solution}
+\end{itemize}
+\newpage
+\item \begin{algorithm}
+\begin{algorithmic}
+	\Function{\texttt{G}}{$n$}
+		\If{$n \leq 1$}
+			\State \Return 1000
+		\EndIf
+		\If{\texttt{G}($n/3$) $> 5$}
+			\For{$i$ from $0$ to $n-1$}
+				\State print "YAY!"
+			\EndFor
+			\State \Return $5 \cdot \texttt{G}(n/3)$
+		\Else
+			\For{$i$ from $0$ to $n^2-1$}
+				\State print "YAY!"
+			\EndFor
+			\State \Return $4\cdot \texttt{G}(n/3)$ 
+		\EndIf
+		\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\begin{itemize}
+	\item For what values of $n$ do we reach the ``else'' branch?
+	\begin{solution}
+		No values of $n$ use the else branch. It was a trick -- the else branch is actually dead code.
+	\end{solution}
+	\item Write a recurrence to describe the worst case running time of $\texttt{G}$. 
+	\begin{solution}
+		\[ T(n) = \begin{cases}
+				1 &\text{ if } n \leq 1\\
+				2T(n/3) + cn &\text{ otherwise}
+		\end{cases}\]
+		Where $c$ is some constant. 
+	\end{solution}
+	\item Find a big-$\Theta$ bound on the running time by solving the recurrence.
+	\begin{solution}
+		We actually did almost exactly this in Section 1 (part d), with just $n$ instead of $cn$, and hitting the base case a little earlier. The small difference in the definition doesn't affect the $\Theta(n)$ bound we got there.
+	\end{solution}
+\end{itemize}
+\end{enumerate}
+\end{document}

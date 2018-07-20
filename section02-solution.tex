@@ -1,0 +1,110 @@
+\documentclass[12pt]{article}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.15 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{color}
+\definecolor{purple}{RGB}{51,0,111}
+
+\newenvironment{solution}
+	{\begin{center}
+	\begin{tabular}{|p{0.9\textwidth}|}
+	\hline\\
+	\textbf{Solution:}
+	}
+	{\\\\
+	\hline
+	\end{tabular}
+	\end{center}
+	}
+
+\begin{document}
+\vspace*{-2em}
+{\large CSE 332 Summer 18\\
+Section 02}
+\vspace{-1em}
+	
+\begin{center}
+	{\huge \color{purple} $\mathcal{O}, \Omega,$ and $\Theta$ oh my!}
+\end{center}
+
+Give a formal proof of each of the following statements, along with the scratch-work to find the $c$ and $n_0$. 
+
+\begin{enumerate}[(a)]
+	\item $5n + 7$ is $O(n)$
+		\begin{solution}
+			Scratch work:\\
+			$5n \leq 5\cdot n$ for all $n$\\
+			$7 \leq n$ for $n \geq 7$\\
+			So $5n + 7 \leq 6n$ for $n\geq 7$.
+			
+			\begin{proof}
+				We take $c = 6$ and $n_0 = 7$. For $n \geq n_0$ we have both of the following inequalities:
+				\[5n \leq 5n \text{ and }7 \leq n\] 
+				Adding together the two inequailities we have:
+				$5n + 7 \leq 6n$ as long as $n \geq n_0$, which is what we needed to show.
+			\end{proof}
+			
+		\end{solution}
+	\item $3n^2 - 17n$ is $O(n^2)$
+		\begin{solution}
+			Scratch work:\\
+			$3n^2 \leq 3\cdot n^2$ for all $n$\\
+			$-17n \leq 0\cdot n^2$ if $n \geq 1$
+			Take $c = 3+0 = 3$ and $n_0 = 1$.
+			
+			\begin{proof}
+				We take $c=3$ and $n_0=1$. 
+				For $n$ at least $1$, $-17n$ is negative, so it is certainly at most $0 = 0n^2$, and $3n^2$ is always at most $3n^2$. Adding together these inequalities we get $3n^2 - 17n \leq 3n^2$ for $n \geq 1$, which is what we wanted to show.
+			\end{proof}
+		\end{solution}
+		
+	\item $\log_5(n)$ is $\Omega(\log_3(n))$
+		\begin{solution}
+			Scratch work:\\
+			Applying the change of base formula, $\log_5(n) = \frac{\log_3(n)}{\log_3(5)}$.
+			
+			\begin{proof}
+				We take $c = \frac{1}{\log_3(5)}$, and $n_0 = 1$. Applying the change-of-base formula:
+				\[ \log_5(n) = \frac{\log_3(n)}{\log_3(5)} \geq c\cdot \log_3(n)\] for all $n\geq 1$.
+			\end{proof}
+		\end{solution}
+	\item $2n^3 + 3$ is $\Theta(n^3)$
+		\begin{solution}
+			This is basically two proofs in one.
+			
+			Scratch work for $O$:\\
+			$2n^3 \leq 2n^3$\\
+			$3 \leq 3n^3$ for $n \geq 1$. 
+			
+			Scratch work for $\Omega$:\\
+			$2n^3 \geq 2n^3$\\
+			$3 \geq 0n^3$ 
+			
+			\begin{proof}
+				To show $2n^3 + 3$ is $O(n^3)$, we take $c = 5$ and $n_0 = 1$.
+				We have the following inequalities for $n\geq 1$:
+				\[ 2n^3 \leq 2n^3 \text{ and } 3 \leq 3n^3 \]
+				Adding these inequalities together gives: $2n^3 + 3 \leq 5n^3$, as required. Thus $2n^3 + 3$ is $O(n^3)$.
+				
+				To show $2n^3 + 3$ is $\Omega(n^3)$, we take $c = 2$ and $n_0 = 1$. 
+				We have $2n^3 + 3 \geq 2n^3 = c\cdot n^3$, which is what we needed to show to conclude $2n^3 + 3$ is $\Omega(n^3)$.
+				
+				Combining these two statements we have $2n^3 + 3$ is $\Theta(n^3)$. 
+			\end{proof}
+		\end{solution}	
+	
+\end{enumerate}
+
+\end{document}
