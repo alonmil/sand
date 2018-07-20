@@ -1,0 +1,116 @@
+\documentclass[12pt]{article}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.15 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage{color}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+\definecolor{purple}{RGB}{51,0,111}
+\newenvironment{solution}
+	{\begin{center}
+	\begin{tabular}{|p{0.9\textwidth}|}
+	\hline\\
+	\textbf{Solution:}
+	}
+	{\\\\
+	\hline
+	\end{tabular}
+	\end{center}
+	}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\lstset{
+  language=Java,
+  basicstyle=\ttfamily,
+  breaklines=true,
+  columns=flexible,  
+}
+
+\begin{document}
+{\huge CSE 332 Summer 18\\
+Exercise 07}
+
+
+\begin{center}
+	{\huge \color{purple} Building Sorts}
+\end{center}
+
+Due Date: Friday July 27, 11:59 PM\\
+Submit as a pdf to gradescope.
+
+In this exercise we'll see how sorting relates to building data structures that maintain some sort of ordering property (here, heaps and AVL trees).
+
+\begin{enumerate}
+\item
+We saw Floyd's BuildHeap could improve the running time of HeapSort by a constant factor. In this problem, we'll use Floyd's BuildHeap to design sorting-like algorithms where the BuildHeap method gives us a better asymptotic running time.
+
+Consider the $k$-sorting problem. 
+\begin{tcolorbox}
+$k$-sorting\\
+Given an array of unsorted elements, find the $k$ smallest elements in the array.
+\end{tcolorbox}
+Consider three algorithms for this problem:
+
+\begin{tabular}{|p{2.1in}|p{2.1in}|p{2.1in}|}
+\hline
+Algorithm A & Algorithm B & Algorithm C\\
+\hline
+The $O(n \log k)$ algorithm you implemented Project 2. &
+\begin{lstlisting}[aboveskip = -0.7\baselineskip, belowskip = -\baselineskip]
+Heap H = empty heap
+for(i from 1 to n)
+  H.insert(A[i])
+for (i from 1 to k)
+  print H.removeMin()
+\end{lstlisting}
+	& 
+\begin{lstlisting}[aboveskip = -0.7\baselineskip, belowskip = -\baselineskip]
+Heap H = BuildHeap(A)
+for (i from 1 to k)
+  print H.removeMin()
+\end{lstlisting}
+	\\ \hline
+\end{tabular}
+
+	\begin{enumerate}
+		\item What are the running times of Algorithms B and C? (give O() bounds in terms of $n$ and $k$)? [2 points]
+		\item If $k$ is a constant, what do the big-O running times of A,B, and C become? (Your answers for this part should not have $k$ anywhere -- big-O notation suppresses constants) [2 points]
+		\item If $k$ is $\sqrt{n}$, what do the big-O running times of A,B, and C become? [2 points]
+		\item Based on your answers for the previous parts, explain when algorithm C is better than B by more than a constant factor. [2 points]
+		\item Give a scenario in which you would use Algorithm A over B and C, and explain why it is better. [2 points]
+	\end{enumerate}
+
+\item	
+We spent half of a lecture \href{https://courses.cs.washington.edu/courses/cse332/18su/lectures/lecture04.pdf}{(lecture 4)} designing BuildHeap. We did not do the same for BuildAVL:
+\begin{tcolorbox}
+	\texttt{BuildAVL} \\
+	Given an unsorted array, create an AVL tree containing the elements of the array.
+\end{tcolorbox}
+In this problem, we'll figure out why we haven't gone over it.
+		\begin{enumerate}
+			\item First, we'll use a \textbf{reduction}. Design an algorithm to sort an array that uses \texttt{BuildAVL} as a black box. Your algorithm should do only $O(n)$ work beyond the \texttt{BuildAVL} call, and no extra comparisons. [4 points]
+			\item Argue that any comparison-based algorithm for \texttt{BuildAVL} must take $\Omega(n \log n)$ time. [4 points]
+			\item Explain why an AVL Tree you implemented in Project 2 has to use comparisons (i.e. why you couldn't use a fancy $O(n)$ sort as part of some hypothetical \texttt{BuildAVL} method) [2 points]
+		\end{enumerate}
+	Now it's clear why we didn't design a fancy \texttt{BuildAVL} algorithm -- it doesn't exist!
+	\end{enumerate}
+\end{document}

@@ -1,0 +1,308 @@
+\documentclass[12pt]{article}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.15 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage{algorithm, algpseudocode}
+\usepackage{ulem}
+\usepackage{tcolorbox}
+\usepackage[]{forest}
+\forestset{.style={for tree=
+{parent anchor=south, child anchor=north,align=center,inner sep=2pt}}}
+
+\newenvironment{solution}
+	{\begin{center}
+	\begin{tabular}{|p{0.9\textwidth}|}
+	\hline\\
+	\textbf{Solution:}
+	}
+	{\\\\
+	\hline
+	\end{tabular}
+	\end{center}
+	}
+
+\begin{document}
+{\huge CSE 332 Summer 18\\
+Section 04}
+\section{Finding Dominant Terms}
+When you're looking for dominant terms (to find a big-O/big-$\Theta$), here are some useful principles:
+In the following list, $n$ is a variable and $c$ is a constant greater than $0$.
+\begin{enumerate}
+	\item $n^c = 2^{c \log n}$ so every polynomial is less than $2^n$. This also means that every polynomial is less than, say $2^{\sqrt{n}}$. 
+	\item $n^c$ dominates $\log(n)$. Even if $c$ is less than $1$. 
+	\item Taking the $\log$ of a function makes it MUCH smaller.
+\end{enumerate}
+
+Some problems
+\begin{enumerate}
+	\item Prove or disprove the following claim: If $\log( f(n) )$ is $\Theta(\log( g(n) ) )$ then $f(n)$ is $\Theta(g(n))$. If it is true, write a formal big-O proof. If it is false, provide an explicit counter-example (and explain why it is a counter-example). 
+	\begin{tcolorbox}
+	TODO
+	\end{tcolorbox}
+	
+	\item True or false: $n^{0.001} + \log^{1000000}(n)$ is $\Theta\left( \log^{1000000}(n) \right)$.\\
+	\begin{tcolorbox}
+		True. It's tempting to reference (2) above, but if we consider the following alternative forms:
+		$$n^{0.001}=n^{\frac{1}{1000}}=\sqrt[1000]{n}$$ 
+		$$\log^{1000000}(n)=(log(n))^{1000000}$$
+		As $n$ gets big enough, $\log^{1000000}(n)$ starts growing exponentially, while $\sqrt[1000]{n}$ grows extremely slowly ($\sqrt[1000]{1000000}\approx1.014$). By comparing a few sample numbers, we can intuitively know that the whole term $n^{0.001} + \log^{1000000}(n)$ is indeed $\Theta\left( \log^{1000000}(n) \right)$.
+	\end{tcolorbox}
+
+	\item Which is the dominant term: $2^{ \sqrt{\log(n)} } + n^{5}$ 
+
+	\begin{tcolorbox}
+	TODO
+	\end{tcolorbox}
+	%$2^{\sqrt{\log(n)}}=2^{(\log(n))^{\frac{1}{2}}}$
+	
+\end{enumerate}
+
+\section{Analyzing Code}
+For each of the following code snippets, either give a $\Theta()$ running time, or write a recurrence to describe the running time and solve it.
+
+\begin{verbatim}
+int foo(int n){
+      for(int i = 0; i < log(n); i++){
+           for(int j = 0; j < n; j++){
+                 print "hooray"
+           }
+      }
+      for(int k = 0; k < sqrt(n); k++){
+           print "hello"
+           for(int l=0; l < n; l++){
+                print "hi"
+                if(l % 3 == 0)
+                     break; //out of the inner loop only
+           }
+     }
+}
+\end{verbatim}
+\begin{tcolorbox}
+$$f(n)=nlog(n)+\sqrt{n}$$
+$$\Theta(n)=nlog(n)$$
+\end{tcolorbox}
+
+\begin{verbatim}
+int bar(int n){
+      if(n < 100){
+            for(int i = 0; i < 2^n; i++){
+                 print ":)";
+            }
+            return 3;
+      }
+      else{
+            for(int i = 0; i < n; i++){
+                 print ":("
+            }
+            return bar(n/2) * bar(n/2) + 8
+      }
+}
+\end{verbatim}
+\begin{tcolorbox}
+\[ T(n) = \begin{cases} 2^n &\text{ if } n < 100\\
+		2T(n/2) + n &\text{ otherwise} \end{cases} \]
+Worst-case scenario, $2^n$ will be $2^{99}$, which we can say is a constant $d$. Using Master Theorem,
+\[a=2\]
+\[b=2\]
+\[c=1\]
+\[log_b(a)=log_2(2)=1=c\]
+\[\Theta(n)=nlog(n)\]
+\end{tcolorbox}
+
+\section{Heaps and AVL trees}
+\begin{enumerate}
+
+\item Insert 3,1,4,2,5,7,9,6 into an empty binary min-heap (you can draw this either in the array format or as a tree). 
+\begin{tcolorbox}
+\[[1, 2, 4, 3, 5, 7, 9, 6]\]
+\end{tcolorbox}
+
+\item Insert the same values into an empty binary max-heap
+\begin{tcolorbox}
+\[[9, 6, 7, 4, 2, 3, 5, 1]\]
+\end{tcolorbox}
+
+\item Suppose you were given the values 3,1,4,2,5,7,9,6 (in order) in an array. Run Floyd's Build Heap algorithm to turn it into a min-heap.
+\begin{tcolorbox}
+\[[1, 2, 4, 3, 5, 7, 9, 6]\]
+\end{tcolorbox}
+
+\newpage
+\item Insert the same values into an empty AVL tree.\\
+\begin{tcolorbox}
+\begin{center}
+\begin{forest}
+[3
+	[1
+		[ ,no edge]
+		[2]
+	]
+	[5
+		[4]
+		[7
+			[6]
+			[9]
+		]
+	]
+]
+\end{forest}
+\end{center}
+\end{tcolorbox}
+\end{enumerate}
+
+\section{Recurrences}
+Find an exact closed form of the following recurrence. Check your answer with the Master Theorem.
+
+\[ T(n) = \begin{cases} 4 &\text{ if } n \leq 81\\
+						 3T(n/9) + n^3 &\text{ otherwise} \end{cases}\]
+
+\begin{tcolorbox}
+We can follow the steps outlined in the cheat sheet at the end of this packet to help us along:
+\begin{enumerate}
+	\setcounter{enumi}{-1}
+	\item Draw a few levels of the tree.
+	(I chose to draw input size. Work per node is also suitable.)
+	\begin{center}
+	\begin{forest}
+	[n
+		[$\frac{n}{9}$
+			[$\frac{n}{81}$
+				[...
+					[1]
+				]
+			]
+			[$\frac{n}{81}$
+				[...
+					[1]
+				]
+			]
+			[$\frac{n}{81}$
+				[...
+					[1]
+				]
+			]
+		]
+		[$\frac{n}{9}$
+			[...]
+		]
+		[$\frac{n}{9}$
+			[...]
+		]
+	]
+	\end{forest}
+	\end{center}
+\end{enumerate}
+\end{tcolorbox}
+\newpage
+\begin{tcolorbox}
+\begin{enumerate}
+	\setcounter{enumi}{0}
+	\item Let the root node be at level $0$. Give a formula for the size of the input at level $i$. 
+	$$\frac{n}{9^i}$$
+	\item What is the number of nodes at level $i$? 
+	$$3^i$$
+	\item What is the work done at the $i^{\text{th}}$ recursive level? 
+	$$3^i(\frac{n}{9^i})^3$$
+	\item What is the last level of the tree? 
+	$$i=log_9(n)-2$$
+	\item What is the work done at the base case? 
+	$$3^{log_9(n)-2}\cdot4$$
+	\item Write an expression for the total work done. 
+	$$3^{log_9(n)-2}\cdot4 + \sum_{i=0}^{log_9(n)-3} 3^i(\frac{n}{9^i})^3 $$
+	\item Simplify until you have a ``closed form'' (i.e. no summations or recursion).
+	$$3^{log_9(n)-2}\cdot4 + \sum_{i=0}^{\log_9(n)} \frac{n^3}{3^{5i}} $$
+	$$3^{log_9(n)-2}\cdot4 + n^3\sum_{i=0}^{\log_9(n)-2} 3^{-5i} $$ 
+	$$3^{log_9(n)-2}\cdot4 + n^3\sum_{i=0}^{\log_9(n)-2} (\frac{1}{3^5})^i $$ 
+	$$3^{log_9(n)-2}\cdot4 + n^3\frac{(\frac{1}{3^5})^{\log_9(n)-2}-1}{\frac{1}{3^5}-1} $$
+\end{enumerate}
+\end{tcolorbox}
+\newpage
+\begin{tcolorbox}
+Now, using Master Theorem,
+$$a=3$$
+$$b=9$$
+$$c=3$$
+$$\log_b(a)=\log_9(3)<3=c$$
+$$\Theta(n^3)$$
+\end{tcolorbox}
+
+\section{Using Data Structures}
+Professor Dumbledore has finally figured out how to get electricity to work in Hogwarts, and just installed the wizarding world's first computer. Upon hearing of your knowledge of data structures he \sout{abducts you} apparates you to his office to help modernize the millenia-old institution.
+
+
+Each night Professor McGonagall and Professor Snape each submit a list of all disciplinary action they took in the last day. Each of them submits a separate minheap to Dumbledore, with priority representing the severity of the incident (more severe incidents have lower-number priorities). Professor McGonagall's list consistently has $n$ elements, while Snape's has $2^n$ elements. 
+
+Dumbledore would like to examine the $k$ most severe incidents (regardless of whether they were in Snape's heap or McGonagall's). 
+
+The size of $k$ depends on Dumbledore's mood, and he tells you it could be anything between $k=1$ and $k=2^n+n$. His first idea is to use Floyd's Build Heap algorithm to combine the two heaps into one big heap, and then do $k$ \texttt{removeMin}s in the new heap.  
+	\begin{verbatim}
+	array newHeapArr = new array[S_Heap.size + M_Heap.size]
+	for(i from 1 to S_Heap.size)
+	     newHeapArr[i] = S_Heap[i]
+	for(i from 1 to M_Heap.size)
+	     newHeapArr[i+S_Heap.size] = M_Heap[i]
+	Heap Combined_Heap = BuildHeap( newHeapArr )
+	for (i from 1 to k){
+	     	print Combined_Heap.removeMin()
+	}
+\end{verbatim}		
+\newpage
+	What is the (simple) big-$O$ bound for running build heap in Dumbledore's case?
+	\begin{tcolorbox}
+		$$O(2^nlog(n+2^n))$$
+	\end{tcolorbox}
+	How long will the $k$ \texttt{removeMin}s take (you should give the best, simple $O()$ bound you can. Your bound should include both $n$ and $k$). 
+	\begin{tcolorbox}
+		$$O(klog(n+2^n))$$
+	\end{tcolorbox}
+	What is the overall running time of the algorithm? (again give as simple of an $O()$ bound as you can. In terms of whichever of $k$ and $n$ are necessary).
+	\begin{tcolorbox}
+		$$O(2^nlog(n+2^n))$$
+	\end{tcolorbox}
+
+\newpage
+\section*{Some Useful Facts}
+When we're using the tree method to solve a recurrence, we usually use the following steps:
+\begin{enumerate}
+	\setcounter{enumi}{-1}
+	\item Draw a few levels of the tree.
+	\item Let the root node be at level $0$. Give a formula for the size of the input at level $i$. 
+	\item What is the number of nodes at level $i$? 
+	\item What is the work done at the $i^{\text{th}}$ recursive level? 
+	\item What is the last level of the tree? 
+	\item What is the work done at the base case? 
+	\item Write an expression for the total work done. 
+	\item Simplify until you have a ``closed form'' (i.e. no summations or recursion).
+\end{enumerate}
+
+
+Geometric series identities:
+\[ \sum_{i=0}^k c^i = \frac{c^{k+1} - 1}{c-1} ~~~~~~~~~~~ \sum_{i=0}^{\infty} c^i = \frac{1}{1-c} \text{ if } |c| < 1\]
+
+Common Summations:
+\[ \sum_{i=0}^n i = \frac{n(n+1)}{2} ~~~~~~~~~~~~~~~~~~    \sum_{i=0}^n i^2 = \frac{n(n+1)(2n+1)}{6} \]
+
+Log identities:
+\[ a^{\log_b(c)} = c^{\log_b(a)} ~~~~~~~~ \log_b(a) = \frac{\log_d(a)}{\log_d(b)}\]
+
+\textbf{Master Theorem:}\\
+Given a recurrence of the following form:
+\[ T(n) = \begin{cases} d &\text{ if } n \leq \text{ some constant}\\
+			aT(n/b) + n^c &\text{otherwise}
+			\end{cases} \]
+with $a,b,c$ are constants. \\
+If $\log_b(a) < c$ then $T(n) \text{ is } \Theta(n^c)$\\
+If $\log_b(a) = c$ then $T(n) \text{ is } \Theta(n^c\log n)$\\
+If $\log_b(a) > c$ then $T(n) \text{ is } \Theta\left(n^{\log_b(a)}\right)$
+\end{document}
